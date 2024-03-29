@@ -29,7 +29,7 @@ app.get("/", renderMessages);
 app.get("/api/messages", getMessages);
 
 // POST a new Message
-app.post("/api/message", addMessage);
+app.post("/api/messages", addMessage);
 
 // DELETE all Messages
 app.delete("/api/messages", deleteAllMessages);
