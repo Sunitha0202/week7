@@ -1,56 +1,129 @@
 const Goal = require("./model");
 
-// Render Controller: Render index.html with mesasages using EJS
-const renderMessages = async (req, res) => {
+// Render Controller: Render index.html with goals using EJS
+const renderGoals = async (req, res) => {
   try {
-    const goals = await Message.find({});
-    res.render("../views/index", { messages }); // Render index.ejs with messages data
+    const goals = await Goal.find({});
+    res.render("index", { goals }); // Render index.ejs with goals data
   } catch (error) {
     console.error("Error rendering index.html:", error);
     res.status(500).send("Internal Server Error");
   }
 };
 
-// get all Messages
-const getMessages = async (req, res) => {
+// get all Goals
+const getGoals = async (req, res) => {
   try {
-    const messages = await Message.find({});
-    res.status(200).json(messages);
+    const goals = await Goal.find({});
+    res.status(200).json(goals);
   } catch (error) {
-    console.error("getMessages:", error.message);
-    res.status(500);
+    console.error("Error rendering index.html:", error);
+    res.status(500).send("Internal Server Error");
   }
 };
 
-// Add one Message
-const addMessage = async (req, res) => {
+const renderGoalForm = (req, res) => {
+  res.render("addgoal"); // Assuming "addgoal.ejs" is located in the "views" directory
+};
+
+// Controller function to handle adding a new goal (used for rendering and API)
+const addGoalEjs = async (req, res) => {
   try {
-    const { sender, recipient, content } = req.body;
-    const newMessage = new Message({ sender, recipient, content });
-    await newMessage.save();
-    res.status(201).json(newMessage);
+    const { title, description, targetDate } = req.body;
+    // Convert the achieved field to a Boolean
+    const achieved = req.body.achieved === "true";
+    const newGoal = new Goal({ title, description, targetDate, achieved });
+    await newGoal.save();
+    // Redirect to the main page after successfully adding the goal
+    res.redirect("/"); // Adjust the URL as needed
   } catch (error) {
-    console.error("Error:", error.message);
-    res.status(500).json({ message: "try again later" });
+    console.error("Error rendering index.html:", error);
+    res.status(500).send("Internal Server Error");
   }
 };
 
-// Delete all Messages
-const deleteAllMessages = async (req, res) => {
+// Add one Goal
+const addGoal = async (req, res) => {
   try {
-    const result = await Message.deleteMany({});
+    const { title, description, targetDate, achieved } = req.body;
+    const newGoal = new Goal({ title, description, targetDate, achieved });
+    await newGoal.save();
+
+    // Render the newly added goal
+    res.render("goal", { goal: newGoal });
+  } catch (error) {
+    console.error("Error rendering index.html:", error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+// Get Goal by ID
+const getGoal = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const goal = await Goal.findById(id);
+    if (!goal) {
+      return res.status(404).json({ message: "Goal not found" });
+    }
+    res.status(200).json(goal);
+  } catch (error) {
+    console.error("Error rendering index.html:", error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+// Delete Goal by ID
+const deleteGoal = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const goal = await Goal.findByIdAndDelete({ _id: id });
+    if (!goal) {
+      return res.status(404).json({ message: "Goal not found" });
+    }
+    res.status(200).json({ message: "Goal deleted successfully" });
+  } catch (error) {
+    console.error("Error rendering index.html:", error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+// Delete all Goals
+const deleteAllGoals = async (req, res) => {
+  try {
+    const result = await Goal.deleteMany({});
     res
       .status(200)
-      .json({ message: `Deleted ${result.deletedCount} Messages successfully` });
+      .json({ message: `Deleted ${result.deletedCount} books successfully` });
   } catch (error) {
-    console.error("Error:", error.message);
-    res.status(500).json({ message: "try again later" });
+    console.error("Error rendering index.html:", error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+// Update Goal by ID
+const updateGoal = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updatedGoal = req.body;
+    const goal = await Goal.findOneAndUpdate({ _id: id }, updatedGoal);
+    if (!goal) {
+      return res.status(404).json({ message: "Goal not found" });
+    }
+    res.status(200).json(goal);
+  } catch (error) {
+    console.error("Error rendering index.html:", error);
+    res.status(500).send("Internal Server Error");
   }
 };
 
 module.exports = {
-  getMessages,
-  renderMessages,
-  addMessage,
-  deleteAllMessages,
+  getGoals,
+  renderGoals,
+  addGoal,
+  addGoalEjs,
+  renderGoalForm,
+  getGoal,
+  deleteGoal,
+  deleteAllGoals,
+  updateGoal,
 };

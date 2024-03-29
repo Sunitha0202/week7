@@ -3,14 +3,17 @@ const app = express();
 
 const connectDB = require("./db");
 const {
-    getMessages,
-    renderMessages,
-    addMessage,
-    deleteAllMessages,
+  getGoals,
+  renderGoals,
+  addGoal,
+  addGoalEjs,
+  renderGoalForm,
 } = require("./controller");
 
 //Important: will be discussed next week
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 // Set views directory for EJS templates
 app.set("views", "views");
 // Set EJS as the view engine
@@ -21,23 +24,23 @@ app.use(express.static("public"));
 // Connect to MongoDB
 connectDB();
 
+// SSR
 // Route to render index.html with goals using EJS
-app.get("/", renderMessages);
+app.get("/", renderGoals);
+// Define a route to render the addgoal.ejs view
+app.get("/addgoal", renderGoalForm);
+// Route to add  goal using EJS
+app.post("/addgoal", addGoalEjs);
 
-// Routes
-// GET all Messages
-app.get("/api/messages", getMessages);
-
-// POST a new Message
-app.post("/api/message", addMessage);
-
-// DELETE all Goal
-app.delete("/api/messages", deleteAllMessages);
-
+// API
+// GET all Goals
+app.get("/api/goals", getGoals);
+// POST a new Goal
+app.post("/api/goals", addGoal);
 
 const PORT = 4000;
 
 // Start the server
 app.listen(PORT, () => {
-  console.log(`Server 2024/3/25 is running on port http://localhost:${PORT}`);
+  console.log(`Server is running on port http://localhost:${PORT}`);
 });

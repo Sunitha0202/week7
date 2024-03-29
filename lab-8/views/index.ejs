@@ -1,9 +1,10 @@
 <!-- Define a function to render each goal -->
-<% function renderGoal(message) { %>
+<% function renderGoal(goal) { %>
     <li>
-      <strong>Sender:</strong> <%= message.title %><br />
-      <strong>recipient:</strong> <%= message.description %><br />
-      <strong>content:</strong> <%= message.targetDate %><br />
+      <strong>Title:</strong> <%= goal.title %><br />
+      <strong>Description:</strong> <%= goal.description %><br />
+      <strong>Target Date:</strong> <%= goal.targetDate %><br />
+      <strong>Achieved:</strong> <%= goal.achieved %>
     </li>
     <% } %>
     
@@ -13,9 +14,16 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Goals</title>
-        <link rel="stylesheet" href="/styles.css"> <!-- Link to external stylesheet -->
+        <link rel="stylesheet" href="/styles.css" />
+        <!-- Link to external stylesheet -->
       </head>
       <body>
+        <nav>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/addgoal">Add Goal</a></li>
+          </ul>
+        </nav>
         <h1>Goals List</h1>
         <ul>
           <% if (goals.length > 0) { %>

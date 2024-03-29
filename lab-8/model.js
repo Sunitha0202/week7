@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
 
-const messageSchema = new mongoose.Schema({
-    sender: { type: String, required: true },
-    recipient: { type: String, required: true },
-    content: { type: String, required: true }
-  });
+const goalSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  description: { type: String, required: true },
+  targetDate: { type: Date, required: true },
+  achieved: { type: Boolean },
+});
 
-  module.exports = mongoose.model('Mesage', messageSchema);
+module.exports = mongoose.model('Goal', goalSchema);
